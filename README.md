@@ -14,17 +14,34 @@ A simple Python program that converts G5 books in A4 pages.
 
 # Usage
 
-Directly execute it:
+Install from pypi:
 
 ```
-python3 G5toA4.py thesis.pdf
+pip install G5toA4
+```
+
+And directly execute it:
+
+```
+G5toA4 thesis.pdf
 ```
 
 Optionally, specify the output file:
 
 ```
-python3 G5toA4.py thesis.pdf thesis_a4.pdf
+G5toA4 thesis.pdf thesis_a4.pdf
 ```
+
+## Local install
+
+Clone this repository, then:
+
+```
+pip3 install -r requirements.txt
+python3 -m G5toA4 thesis.pdf
+```
+
+
 
 # License
 

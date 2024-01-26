@@ -13,7 +13,8 @@ import io
 import datetime
 
 parser = argparse.ArgumentParser(
-    prog=sys.argv[0],
+    #:prog=sys.argv[0],
+    prog="G5toA4",
     # formatter_class=argparse.RawTextHelpFormatter,
     description="Shrink a PDF G5 book into a A4, maintaining the real sizes.",
     epilog="(C) 2024 Massimo Girondi girondi@kth.se - GNU GPL v3")
