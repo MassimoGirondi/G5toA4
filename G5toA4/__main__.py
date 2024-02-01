@@ -11,6 +11,7 @@ import argparse
 from reportlab.pdfgen.canvas import Canvas
 import io
 import datetime
+import subprocess
 
 parser = argparse.ArgumentParser(
     #:prog=sys.argv[0],
@@ -70,12 +71,31 @@ if currentPage:
     pdf_writer.add_page(currentPage)
 
 last_edit = datetime.datetime.fromtimestamp(os.stat(in_file).st_mtime)
+
+# Try to get a md5sum of the file. But don't fail completely
+# TODO: We should use md5 Python module to ensure portability!
+
+try:
+  md5_cmd = ["md5sum", in_file]
+  md5_output = subprocess.check_output(md5_cmd).decode().split(" ")[0]
+except Exception as ex:
+  print("Error during md5sum:", ex)
+  md5_output = None
+
+
+# Build the report for the fist page
+
 report = "cmdline: " + " ".join(sys.argv)
 report += "\nInput file: " + str(pathlib.Path(in_file).resolve())
-report += "\nLast modification: " + str(last_edit.isoformat())
-report += "\nOutput file: " + str(pathlib.Path(out_file).resolve())
-report += "\nFinished at: " + str(datetime.datetime.now().isoformat())
 report += "\nInput pages: " + str(len(pdf_reader.pages))
+report += "\nLast modification: " + str(last_edit.isoformat())
+
+if md5_output:
+  report += "\n\n" + " ".join(md5_cmd) + ":"
+  report += "\n" + md5_output
+
+report += "\n\nOutput file: " + str(pathlib.Path(out_file).resolve())
+report += "\nFinished at: " + str(datetime.datetime.now().isoformat())
 report += "\nOutput pages: " + str(len(pdf_writer.pages))
 
 packet = io.BytesIO()
@@ -83,7 +103,7 @@ canvas = Canvas(packet)
 canvas.setPageSize((1690, 2390))
 
 textobject = canvas.beginText()
-textobject.setTextOrigin(20, 150)
+textobject.setTextOrigin(20, 180)
 textobject.textLines(report)
 canvas.drawText(textobject)
 canvas.save()
